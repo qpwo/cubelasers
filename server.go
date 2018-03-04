@@ -71,6 +71,12 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 	}
 }
 
+// send "users" to user
+func OutgoingHandler(w http.ResponseWriter, r *http.Request) {
+	dataString, _ := json.Marshal(users)
+	w.Write(dataString)
+}
+
 func main() {
 	// load users from file
 	loadUsers()
@@ -80,6 +86,9 @@ func main() {
 
 	// take posts on /datasend
     mux.HandleFunc("/datasend", PostHandler)
+
+	// take posts on /datasend
+    mux.HandleFunc("/datareceive", OutgoingHandler)
 
     fs := http.FileServer(http.Dir("./"))
     mux.Handle("/", http.StripPrefix("/", fs))
