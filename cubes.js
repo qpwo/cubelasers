@@ -104,11 +104,12 @@ function defaultData() {
 }
 // function to send my stuff to the server
 function sendMyData() {
-  console.log("POSTING:  " + JSON.stringify(myData));
+  var d = {};
+  d[myName] = myData;
   $.ajax({
     type:"POST",
     url:"/datasend",
-    data: JSON.stringify({myName: myData})
+    data: JSON.stringify(d);
   });
 }
 
