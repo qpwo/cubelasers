@@ -5,15 +5,15 @@ var brfv4BaseURL = "js/libs/brf_asmjs/";
 var faces;
 
 function initExample() {
-  var webcam      = document.getElementById("_webcam");    // our webcam video
-  var imageData    = document.getElementById("_imageData");  // image data for BRFv4
-  var imageDataCtx  = null;
+  var webcam = document.getElementById("_webcam");    // our webcam video
+  var imageData = document.getElementById("_imageData");  // image data for BRFv4
+  var imageDataCtx = null;
 
-  var brfv4      = null;
-  var brfManager    = null;
-  var resolution    = null;
-  var ua        = window.navigator.userAgent;
-  var isIOS11      = (ua.indexOf("iPad") > 0 || ua.indexOf("iPhone") > 0) && ua.indexOf("OS 11_") > 0;
+  var brfv4 = null;
+  var brfManager = null;
+  var resolution = null;
+  var ua = window.navigator.userAgent;
+  var isIOS11 = (ua.indexOf("iPad") > 0 || ua.indexOf("iPhone") > 0) && ua.indexOf("OS 11_") > 0;
 
   startCamera();
 
@@ -30,9 +30,9 @@ function initExample() {
           setTimeout(onStreamDimensionsAvailable, 100);
         } else {
           // Resize the canvas to match the webcam video size.
-          imageData.width    = webcam.videoWidth;
-          imageData.height  = webcam.videoHeight;
-          imageDataCtx    = imageData.getContext("2d");
+          imageData.width = webcam.videoWidth;
+          imageData.height = webcam.videoHeight;
+          imageDataCtx = imageData.getContext("2d");
           if(isIOS11) {
             webcam.pause();
             webcam.srcObject.getTracks().forEach(function(track) {
@@ -86,7 +86,7 @@ function initExample() {
     faces = brfManager.getFaces();
     for(var i = 0; i < faces.length; i++) {
       var face = faces[i];
-      if(    face.state === brfv4.BRFState.FACE_TRACKING_START ||
+      if (face.state === brfv4.BRFState.FACE_TRACKING_START ||
           face.state === brfv4.BRFState.FACE_TRACKING) {
         imageDataCtx.strokeStyle="#00a0ff";
         for(var k = 0; k < face.vertices.length; k += 2) {
