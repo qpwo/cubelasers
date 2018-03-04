@@ -4,7 +4,7 @@
 
 let frameCount = 0;
 let camera, scene, renderer; // primary objects
-let sphere, light, texture; // secondary objects
+let sphere, light, texture, cylinder; // secondary objects
 let myName = "default";
 let allUsers = {}, allCubes = {}, myData = {}, myCube;
 let mouthOpen = false;
@@ -21,7 +21,7 @@ function freshCube() {
     new THREE.BoxGeometry(5,5,5),
     new THREE.MeshLambertMaterial({color: 0xFF0000})
   );
-  cube.castShadow = true;
+  //cube.castShadow = true;
   return cube;
 }
 
@@ -31,7 +31,7 @@ function init() {
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor(0xdddddd, 1); // Grey background
-  renderer.shadowMap.enabled = true; // Allow shadows
+  //renderer.shadowMap.enabled = true; // Allow shadows
   document.getElementById("webgl-container").appendChild(renderer.domElement);
 
   scene = new THREE.Scene();
@@ -39,19 +39,22 @@ function init() {
   
   myCube = freshCube();
   scene.add(myCube);
-  //[myCube.position.x, myCube.position.y, myCube.position.z, myCube.rotation.x, myCube.rotation.y, myCube.rotation.z] =
-  //  [myData.x, myData.y, myData.z, myData.rx, myData.ry, myData.rz];
   
   sphere = new THREE.Mesh(
     new THREE.SphereGeometry(100,32,32),
     new THREE.MeshLambertMaterial({side: THREE.DoubleSide, map:texture})
   );
-  sphere.receiveShadow = true;
+  //sphere.receiveShadow = true;
   scene.add(sphere);
+
+  cylinder = new THREE.Mesh(
+    new THREE.CylinderGeometry(1,1,5,16),
+    new THREE.MeshBasicMaterial({color: 0xffff00})
+  );
 
   light = new THREE.PointLight(0xFFFF00); // yellow point light
   light.position.set(0, 0, 0);
-  light.castShadow = true;
+  //light.castShadow = true;
   scene.add(light);
 }
 
@@ -90,11 +93,18 @@ function animate() {
   let [a,b,c,d] = [P[47], P[60], P[57], P[53]];
   if (dist2d(b,c)/dist2d(a,d) > 0.9) {
     if (!mouthOpen) {
-      console.log("mouth open");
       mouthOpen = true;
+      scene.add(cylinder);
     }
   } else {
     mouthOpen = false;
+    scene.remove(cylinder);
+  }
+  if (mouthOpen) {
+    [cylinder.position.x, cylinder.position.y, cylinder.position.z] = [myCube.position.x, myCube.position.y, myCube.position.z];
+    [cylinder.rotation.x, cylinder.rotation.y, cylinder.rotation.z] = [myCube.rotation.x, myCube.rotation.y, myCube.rotation.z];
+    cylinder.translateZ(-20);
+    [cylinder.rotation.x, cylinder.rotation.y, cylinder.rotation.z] = [cylinder.rotation.z, cylinder.rotation.x, cylinder.rotation.y] 
   }
 
   let rotationSpeed = .0003;
