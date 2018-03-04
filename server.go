@@ -27,8 +27,6 @@ func addUser(userName string, userData *json.RawMessage){
 func processUserData(userJSON string) { // the data recieved from server
 	// new users is a username -> RawJson map, 
 	// but usually only has one key
-	//newUsers := make(map[string]*json.RawMessage)
-	//err := json.Unmarshal([]byte(userJSON), &newUsers)
 	var objmap map[string]*json.RawMessage
 	err := json.Unmarshal([]byte(userJSON), &objmap)
 	if err != nil {
