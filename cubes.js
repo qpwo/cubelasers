@@ -59,7 +59,7 @@ function init() {
 }
 
 function animate() {
-  if (frameCount % 50 == 0) {
+  if (frameCount % 10 == 0) {
     getAllUsers()
     for (let name in allUsers) {
       if (allUsers.hasOwnProperty(name)) {
@@ -112,9 +112,11 @@ function animate() {
   var [xdiff, ydiff] = [nose.x-x0, nose.y-y0]; // distance between current coords and initial coords
 
   if (Math.abs(ydiff) > 20)
-    myCube.rotation.x += ysign * Math.sign(ydiff)*(Math.abs(ydiff)-20) * rotationSpeed; // cube turns with face
+    myCube.rotateOnWorldAxis(new THREE.Vector3(1,0,0), ysign * Math.sign(ydiff)*(Math.abs(ydiff)-20) * rotationSpeed);
+    //myCube.rotation.x += ysign * Math.sign(ydiff)*(Math.abs(ydiff)-20) * rotationSpeed; // cube turns with face
   if (Math.abs(xdiff) > 20)
-    myCube.rotation.y += xsign * Math.sign(xdiff)*(Math.abs(xdiff)-20) * rotationSpeed; // cube turns with face
+    myCube.rotateOnWorldAxis(new THREE.Vector3(0,1,0), xsign * Math.sign(xdiff)*(Math.abs(xdiff)-20) * rotationSpeed);
+    //myCube.rotation.y += xsign * Math.sign(xdiff)*(Math.abs(xdiff)-20) * rotationSpeed; // cube turns with face
   [camera.position.x, camera.position.y, camera.position.z] =
     [myCube.position.x, myCube.position.y, myCube.position.z]; // the camera is inside the cube
   [camera.rotation.x, camera.rotation.y, camera.rotation.z] =
