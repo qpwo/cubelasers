@@ -32,16 +32,19 @@ var xsign=1, ysign=1; // for mirroring direction of rotation
     var point = faces[0].points[62];
     [x0, y0] = [point.x, point.y];
   };
+  set0.style.fontSize = "20px";
   c.appendChild(set0);
 
   var mirrorx = document.createElement("button");
   mirrorx.innerText = "Mirror left/right";
   mirrorx.onclick = function() { xsign *= -1; };
+  mirrorx.style.fontSize = "20px";
   c.appendChild(mirrorx);
 
   var mirrory = document.createElement("button");
   mirrory.innerText = "Mirror up/down";
   mirrory.onclick = function() { ysign *= -1; };
+  mirrory.style.fontSize = "20px";
   c.appendChild(mirrory);
 })();
 </script>
