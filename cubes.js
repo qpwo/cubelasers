@@ -2,11 +2,11 @@
 // Uses three.js to render a simple cube + sphere scene
 // Authors: Robert Max Williams and Luke Harold Miles. Public Domain Dedication.
 
-var cubes = [];
+var cubes = {};
 var camera, scene, renderer; // primary objects
 var cube, sphere, light, texture; // secondary objects
 var username = "default"
-var allUsers = {}, myData = {};
+var allUsers = {}, myData = {}, myCube;
 (function() {
 
 //for (let i=0; i<10; i++) {
@@ -36,28 +36,28 @@ function init() {
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(35, 1, 0.1, 10000);
   
-  for (let cube of cubes) {
-    console.log("Adding cube:", cube);
-    scene.add(cube);
-  } 
-
-  getAllUsers()
-  for (let i=0; i<allUsers.length; i++) {
-    new THREE.Mesh(
-      new THREE.BoxGeometry(5,5,5),
-      new THREE.MeshLambertMaterial({color: 0xFF0000})
-    );
-    cube.castShadow = true;
-    scene.add(cube);
-  }
-  
-
-  cube = new THREE.Mesh(
+  myCube = new THREE.Mesh(
     new THREE.BoxGeometry(5,5,5),
     new THREE.MeshLambertMaterial({color: 0xFF0000})
   );
-  cube.castShadow = true;
-  scene.add(cube);
+  [myCube.position.x, myCube.position.y, myCube.position.z, myCube.rotation.x, myCube.rotation.y, myCube.rotation.z] =
+    [myData.x, myData.y, myData.z, myData.rx, myData.ry, myData.rz];
+  
+  getAllUsers()
+  //console.log("ALL USERS:", allUsers);
+  for (var user in allUsers) {
+    console.log("Adding cube for user " + user);
+    if (allUsers.hasOwnProperty(user)) {
+      let cube = new THREE.Mesh(
+        new THREE.BoxGeometry(5,5,5),
+        new THREE.MeshLambertMaterial({color: 0xFF0000})
+      );
+      cube.castShadow = true;
+      console.log("Adding cube for user " + user);
+      cubes[user] = cube;
+      scene.add(cube);
+    }
+  }
 
   sphere = new THREE.Mesh(
     new THREE.SphereGeometry(100,32,32),
@@ -74,18 +74,32 @@ function init() {
 
 function animate() {
   getAllUsers()
-  for (let i=0; i < allUsers; i++) {
-    var cube = cubes[i];
-    var d = allUsers[i];
-    [cube.position.x, cube.position.y, cube.position.z] = [d.x, d.y, d.z];
-    [cube.rotation.x, cube.rotation.y, cube.rotation.z] = [d.rx, d.ry, d.rz];
-  } 
+  //console.log("ALL USERS:", allUsers);
+  
+  for (let user in allUsers) {
+    if (allUsers.hasOwnProperty(user)) {
+      if (!cubes.hasOwnProperty(user)) {
+        let cube = new THREE.Mesh(
+            new THREE.BoxGeometry(5,5,5),
+            new THREE.MeshLambertMaterial({color: 0xFF0000})
+        );
+        cube.castShadow = true;
+        console.log("Adding cube for user " + user);
+        cubes[user] = cube;
+        scene.add(cube);
+      }
+      var cube = cubes[user];
+      var d = allUsers[user];
+      [cube.position.x, cube.position.y, cube.position.z] = [d.x, d.y, d.z];
+      [cube.rotation.x, cube.rotation.y, cube.rotation.z] = [d.rx, d.ry, d.rz];
+    }
+  }
   var leftTemple  = faces[0].points[0];
   var rightTemple = faces[0].points[14];
   var faceWidth = Math.sqrt(Math.pow(leftTemple.x-rightTemple.x,2) + Math.pow(leftTemple.y-rightTemple.y,2));
   var speed = Math.pow(faceWidth/150,2)/10;
 
-  var cube = cubes[0];
+  cube = myCube;
   cube.translateZ(-speed); // cube goes forward in direction facing
   if (cube.position.length() > 100) // cube is outside sphere
     cube.position.setLength(95); // bring it back in
@@ -115,30 +129,31 @@ function animate() {
 
 
 function defaultData() {
-	return {x:0, y:0, z:0, rx:0, ry:0, rz:0, mouthOpen:false}
+  return {x:0, y:0, z:0, rx:0, ry:0, rz:0, mouthOpen:false}
 }
 // function to send my stuff to the server
 function sendMyData() {
-	$.ajax({
-		type:"POST",
-		url:"/datasend",
-		data: {username: myData})
+  $.ajax({
+    type:"POST",
+    url:"/datasend",
+    data: {username: myData}
+  })
 }
 
 // function to get everyone else's data
 function getAllUsers() {
-	$.ajax({
-		type:"GET",
-		url:"/datareceive",
-		success: function(data) {
-			allUsers = JSON.parse(data)
-		}
-	});
-	return allUsers
+  $.ajax({
+    type:"GET",
+    url:"/datareceive",
+    success: function(data) {
+      allUsers = JSON.parse(data)
+    }
+  });
+  return allUsers
 }
 
 // non blocking prompt
 setTimeout(function() { 
-	username = window.prompt('enter your nickname', 'default'); 
-	myData = defaultData()
+  username = window.prompt('enter your nickname', 'default'); 
+  myData = defaultData()
 }, 1);
