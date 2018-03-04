@@ -17,12 +17,9 @@ var users = make(map[string]*json.RawMessage)
 // adds user to "users" and their name if it isn't in "usernames"
 // called by processUserData
 func addUser(userName string, userData *json.RawMessage){
-	_, exists := users[userName]
-	if !exists {
-		users[userName] = userData
-		f, _ := json.Marshal(users)
-		ioutil.WriteFile("users.json", f, 0x644)
-	}
+	users[userName] = userData
+	f, _ := json.Marshal(users)
+	ioutil.WriteFile("users.json", f, 0x644)
 	log.Println("users:", users)
 }
 
