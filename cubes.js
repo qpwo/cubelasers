@@ -5,6 +5,14 @@
 (function() {
 var camera, scene, renderer; // primary objects
 var cube, sphere, light, texture; // secondary objects
+var cubes = [];
+
+for (let i=0; i<10; i++) {
+  cube = {}
+  rand = () => Math.floor(Math.random() * 60) - 30;
+  [cube.x, cube.y, cube.z] = [rand(), rand(), rand()];
+  randb = () => Math.floor();
+}
 
 init(); // load all the objects into the scene
 animate(); // move them around
