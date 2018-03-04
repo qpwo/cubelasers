@@ -48,9 +48,9 @@ function animate() {
   if (cube.position.length() > 100) // cube is outside sphere
     cube.position.setLength(95); // bring it back in
   if (Math.abs(ydiff) > 20)
-    cube.rotation.x += Math.sign(ydiff)*(Math.abs(ydiff)-20) * rotationSpeed; // cube turns with face
+    cube.rotation.x += ysign * Math.sign(ydiff)*(Math.abs(ydiff)-20) * rotationSpeed; // cube turns with face
   if (Math.abs(xdiff) > 20)
-    cube.rotation.y += Math.sign(xdiff)*(Math.abs(xdiff)-20) * rotationSpeed; // cube turns with face
+    cube.rotation.y += xsign * Math.sign(xdiff)*(Math.abs(xdiff)-20) * rotationSpeed; // cube turns with face
   [camera.position.x, camera.position.y, camera.position.z] =
     [cube.position.x, cube.position.y, cube.position.z]; // the camera follows behind
   [camera.rotation.x, camera.rotation.y, camera.rotation.z] =
