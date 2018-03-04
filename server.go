@@ -55,6 +55,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 				http.StatusInternalServerError)
 		}
 
+                log.Println("POST body: ", string(body))
 		processUserData(string(body))
 		fmt.Fprint(w, "POST done")
 	} else {
@@ -87,14 +88,14 @@ func main() {
 
 	// check is server cert is found, otherwise 
 	// use local dummy certs
-	serverCertfile := "/etc/letsencrypt/keys/0000_key-certbot.pem"
+	serverKeyfile := "/etc/letsencrypt/keys/0000_key-certbot.pem"
 	var certfile, keyfile string
-	if _, err := os.Stat(serverCertfile); os.IsNotExist(err) {
+	if _, err := os.Stat(serverKeyfile); os.IsNotExist(err) {
 		keyfile = "dummykey.pem"
 		certfile = "dummycert.pem"
 	} else {
-		keyfile = "/etc/letsencrypt/live/cubelasers.com/fullchain.pem"
-		certfile = serverCertfile
+		keyfile = serverKeyfile 
+		certfile = "/etc/letsencrypt/live/cubelasers.com/fullchain.pem"
 	}
 
 	// s-s-s-serve it up
