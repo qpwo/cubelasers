@@ -76,3 +76,13 @@ function animate() {
   requestAnimationFrame(animate); // rerun on next frame
 }
 })();
+
+
+var username = "default"
+// get username and functions for ajax in/out with server
+
+// non blocking prompt
+setTimeout(function() { var sign = window.prompt('enter your nickname', 'default'); }, 1);
+
+// function to send my stuff to the server
+
