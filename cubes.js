@@ -122,7 +122,7 @@ function sendMyData() {
 	$.ajax({
 		type:"POST",
 		url:"/datasend",
-		data: allUsers[username]})
+		data: {username: myData})
 }
 
 // function to get everyone else's data
@@ -140,5 +140,5 @@ function getAllUsers() {
 // non blocking prompt
 setTimeout(function() { 
 	username = window.prompt('enter your nickname', 'default'); 
-	allUsers[username] = defaultData()
+	myData = defaultData()
 }, 1);
