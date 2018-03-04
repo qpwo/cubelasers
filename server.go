@@ -29,21 +29,25 @@ func addUser(userName string, userData UserData){
 		f, _ := json.Marshal(users)
 		ioutil.WriteFile("users.json", f, 0x644);
 	}
-	log.Println(users)
+	log.Println("users:" users)
 }
-
 
 //process user data
 func processUserData(userJSON string) { // the data recieved from server
 	// new users if a username -> UserData map, 
 	// but usually only has one key
-	newUsers := make(map[string]UserData)
-	err := json.Unmarshal([]byte(userJSON), &newUsers)
+	//newUsers := make(map[string]UserData)
+	//err := json.Unmarshal([]byte(userJSON), &newUsers)
+	var objmap map[string]*json.RawMessage
+	err := json.Unmarshal(data, &objmap)
 	if err != nil {
 		fmt.Println("json unmarshal err:", err)
 	} else {
 		// if unmarshalling went fine, update their data
 		for k, v := range newUsers {
+			var s sendMsg
+			err = json.Unmarshal(*objmap["sendMsg"], &s)
+			newUser := jsonToUserData(v)
 			addUser(k, v)
 		}
 	}
