@@ -5,12 +5,12 @@
   <meta charset="utf-8">
   <title>Laser Cubes Future Chat</title>
   <style>
-  body { margin: 0; padding: 0; }
-  canvas { width: 100%; height: 100%; }
+  body {margin: 0; padding: 0;}
+  canvas {width: 100%; height: 100%;}
   </style>
 </head>
 <body>
-<video  id="_webcam" style="display: none;" playsinline></video> <!-- Invisibly holds webcam input -->
+<video id="_webcam" style="display: none;" playsinline></video> <!-- Invisibly holds webcam input -->
 <div style="position:relative" id="webgl-container"> <!-- Holds webgl rendering of cube universe -->
   <div style="position:absolute;outline: 2px solid green; width:200px; top:0px; right:0px;" id="webcam-container">
     <canvas id="_imageData" style="width:200px; height:200px;"></canvas> <!-- Holds webcam + facial map overlay -->
@@ -18,7 +18,7 @@
 </div>
 
 <script>
-var faces = [{points:{62:{x:0,y:0}}}]; // default temporary value
+var faces = [{points:{0:{x:0,y:0},14:{x:100,y:100},62:{x:0,y:0}}}]; // default temporary value
 var x0 = 0, y0 = 0; // the '0-point' for the webcam feed nose tip
 var xsign=1, ysign=1; // for mirroring direction of rotation
 
