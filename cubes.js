@@ -71,10 +71,37 @@ function animate() {
 
 
 var username = "default"
+var allUsers = {};
+// access my data with allUsers[username]
 // get username and functions for ajax in/out with server
 
-// non blocking prompt
-setTimeout(function() { var sign = window.prompt('enter your nickname', 'default'); }, 1);
 
+function defaultData() {
+	return {x:0, y:0, z:0, rx:0, ry:0, rz:0, mouthOpen:false}
+}
 // function to send my stuff to the server
+function sendMyData() {
+	$.ajax({
+		type:"POST",
+		url:"/datasend",
+		data: allUsers[username]})
+}
 
+// function to get everyone else's data
+function getAllUsers() {
+	$.ajax({
+		type:"GET",
+		url:"/datareceive",
+		success: function(data) {
+			allUsers = JSON.parse(data)
+		}
+	});
+	return allUsers
+}
+
+
+// non blocking prompt
+setTimeout(function() { 
+	username = window.prompt('enter your nickname', 'default'); 
+	allUsers[username] = defaultData()
+}, 1);
