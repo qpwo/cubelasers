@@ -15,7 +15,7 @@ function init() {
   renderer.setSize(window.innerWidth, window.innerHeight);
   renderer.setClearColor( 0xdddddd, 1); // Grey background
   renderer.shadowMap.enabled = true; // Allow shadows
-  document.body.appendChild(renderer.domElement);
+  document.getElementById("webgl-container").appendChild(renderer.domElement);
 
   scene = new THREE.Scene();
 
