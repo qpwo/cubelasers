@@ -59,7 +59,7 @@ function init() {
 }
 
 function animate() {
-  if (frameCount % 50 == 0) {
+  if (frameCount % 5 == 0) {
     getAllUsers()
     for (let name in allUsers) {
       if (allUsers.hasOwnProperty(name)) {
@@ -91,7 +91,9 @@ function animate() {
 
   let P = faces[0].points;
   let [a,b,c,d] = [P[47], P[60], P[57], P[53]];
-  if (dist2d(b,c)/dist2d(a,d) > 0.9) {
+  //if (dist2d(b,c)/dist2d(a,d) > 0.6) {
+  //console.log(dist2d(b,c))
+  if (dist2d(b,c) > 50) {
     if (!mouthOpen) {
       mouthOpen = true;
       scene.add(cylinder);
