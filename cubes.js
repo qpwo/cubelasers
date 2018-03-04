@@ -2,9 +2,22 @@
 // Uses three.js to render a simple cube + sphere scene
 // Authors: Robert Max Williams and Luke Harold Miles. Public Domain Dedication.
 
-(function() {
+var cubes = [];
 var camera, scene, renderer; // primary objects
 var cube, sphere, light, texture; // secondary objects
+(function() {
+
+for (let i=0; i<10; i++) {
+  var cube = new THREE.Mesh(
+    new THREE.BoxGeometry(5,5,5),
+    new THREE.MeshLambertMaterial({color: 0xFF0000})
+  );
+  rand = () => Math.floor(Math.random() * 60) - 30;
+  [cube.position.x, cube.position.y, cube.position.z] = [rand(), rand(), rand()];
+  randb = () => Math.random() * 5;
+  [cube.rotation.x, cube.rotation.y, cube.rotation.z] = [randb(), randb(), randb()];
+  cubes.push(cube)
+}
 
 init(); // load all the objects into the scene
 animate(); // move them around
@@ -20,6 +33,11 @@ function init() {
 
   scene = new THREE.Scene();
   camera = new THREE.PerspectiveCamera(35, 1, 0.1, 10000);
+  
+  for (let cube of cubes) {
+    console.log("Adding cube:", cube);
+    scene.add(cube);
+  } 
 
   cube = new THREE.Mesh(
     new THREE.BoxGeometry(5,5,5),
