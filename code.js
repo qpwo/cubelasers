@@ -2,6 +2,7 @@ var KC = {'LA':37,'UA':38,'RA':39,'DA':40,'0':48,'1':49,'2':50,'3':51,'4':52,'5'
 var camera, scene, renderer;
 var cube, sphere, light, texture, speed=-.1;
 
+var [xrotconst, yrotconst] = [.001, .001];
 init();
 animate();
 
@@ -48,8 +49,12 @@ function init() {
 }
 
 function animate() {
+  var point = faces[0].points[62];
+  var [xdiff, ydiff] = [point.x-x0, point.y-y0];
   requestAnimationFrame(animate);
   cube.translateZ(speed);
+  cube.rotation.x += ydiff * yrotconst;
+  cube.rotation.y += xdiff * yrotconst;
   [camera.position.x, camera.position.y, camera.position.z] = [cube.position.x, cube.position.y+5, cube.position.z+20];
   camera.lookAt(cube.position);
   //[camera.rotation.x, camera.rotation.y, camera.rotation.z] = [cube.rotation.x, cube.rotation.y, cube.rotation.z];
