@@ -109,7 +109,7 @@ function sendMyData() {
   $.ajax({
     type:"POST",
     url:"/datasend",
-    data: JSON.stringify(d);
+    data: JSON.stringify(d)
   });
 }
 
