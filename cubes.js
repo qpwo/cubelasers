@@ -5,20 +5,22 @@
 var cubes = [];
 var camera, scene, renderer; // primary objects
 var cube, sphere, light, texture; // secondary objects
+var username = "default"
+var allUsers = {}, myData = {};
 (function() {
 
-for (let i=0; i<10; i++) {
-  var cube = new THREE.Mesh(
-    new THREE.BoxGeometry(5,5,5),
-    new THREE.MeshLambertMaterial({color: 0xFF0000})
-  );
-  rand = () => Math.floor(Math.random() * 60) - 30;
-  [cube.position.x, cube.position.y, cube.position.z] = [rand(), rand(), rand()];
-  randb = () => Math.random() * 5;
-  [cube.rotation.x, cube.rotation.y, cube.rotation.z] = [randb(), randb(), randb()];
-  cubes.push(cube)
-}
-
+//for (let i=0; i<10; i++) {
+//  var cube = new THREE.Mesh(
+//    new THREE.BoxGeometry(5,5,5),
+//    new THREE.MeshLambertMaterial({color: 0xFF0000})
+//  );
+//  rand = () => Math.floor(Math.random() * 60) - 30;
+//  [cube.position.x, cube.position.y, cube.position.z] = [rand(), rand(), rand()];
+//  randb = () => Math.random() * 5;
+//  [cube.rotation.x, cube.rotation.y, cube.rotation.z] = [randb(), randb(), randb()];
+//  cubes.push(cube)
+//}
+//
 init(); // load all the objects into the scene
 animate(); // move them around
 
@@ -38,6 +40,17 @@ function init() {
     console.log("Adding cube:", cube);
     scene.add(cube);
   } 
+
+  getAllUsers()
+  for (let i=0; i<allUsers.length; i++) {
+    new THREE.Mesh(
+      new THREE.BoxGeometry(5,5,5),
+      new THREE.MeshLambertMaterial({color: 0xFF0000})
+    );
+    cube.castShadow = true;
+    scene.add(cube);
+  }
+  
 
   cube = new THREE.Mesh(
     new THREE.BoxGeometry(5,5,5),
@@ -60,11 +73,19 @@ function init() {
 }
 
 function animate() {
+  getAllUsers()
+  for (let i=0; i < allUsers; i++) {
+    var cube = cubes[i];
+    var d = allUsers[i];
+    [cube.position.x, cube.position.y, cube.position.z] = [d.x, d.y, d.z];
+    [cube.rotation.x, cube.rotation.y, cube.rotation.z] = [d.rx, d.ry, d.rz];
+  } 
   var leftTemple  = faces[0].points[0];
   var rightTemple = faces[0].points[14];
   var faceWidth = Math.sqrt(Math.pow(leftTemple.x-rightTemple.x,2) + Math.pow(leftTemple.y-rightTemple.y,2));
   var speed = Math.pow(faceWidth/150,2)/10;
 
+  var cube = cubes[0];
   cube.translateZ(-speed); // cube goes forward in direction facing
   if (cube.position.length() > 100) // cube is outside sphere
     cube.position.setLength(95); // bring it back in
@@ -83,13 +104,12 @@ function animate() {
     [cube.rotation.x, cube.rotation.y, cube.rotation.z]; // the camera looks in the same direction
 
   renderer.render(scene, camera); // update the scene
+  sendMyData()
   requestAnimationFrame(animate); // rerun on next frame
 }
 })();
 
 
-var username = "default"
-var allUsers = {};
 // access my data with allUsers[username]
 // get username and functions for ajax in/out with server
 
@@ -116,7 +136,6 @@ function getAllUsers() {
 	});
 	return allUsers
 }
-
 
 // non blocking prompt
 setTimeout(function() { 
