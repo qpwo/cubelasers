@@ -7,9 +7,14 @@ let camera, scene, renderer; // primary objects
 let sphere, light, texture; // secondary objects
 let myName = "default";
 let allUsers = {}, allCubes = {}, myData = {}, myCube;
+let mouthOpen = false;
 
 init(); // load all the objects into the scene
 animate(); // move them around
+
+function dist2d(p1,p2) {
+  return Math.sqrt(Math.pow(p1.x-p2.x, 2)+Math.pow(p1.y-p2.y, 2));
+}
 
 function freshCube() {
   let cube = new THREE.Mesh(
@@ -74,12 +79,23 @@ function animate() {
 
   let leftTemple  = faces[0].points[0];
   let rightTemple = faces[0].points[14];
-  let faceWidth = Math.sqrt(Math.pow(leftTemple.x-rightTemple.x,2) + Math.pow(leftTemple.y-rightTemple.y,2));
+  let faceWidth = dist2d(leftTemple, rightTemple);
   let speed = Math.pow(faceWidth/150,2)/10;
 
   myCube.translateZ(-speed); // cube goes forward in direction facing
   if (myCube.position.length() > 100) // cube is outside sphere
     myCube.position.setLength(95); // bring it back in
+
+  let P = faces[0].points;
+  let [a,b,c,d] = [P[47], P[60], P[57], P[53]];
+  if (dist2d(b,c)/dist2d(a,d) > 0.9) {
+    if (!mouthOpen) {
+      console.log("mouth open");
+      mouthOpen = true;
+    }
+  } else {
+    mouthOpen = false;
+  }
 
   let rotationSpeed = .0003;
   let nose = faces[0].points[62]; // tip of the nose
@@ -93,6 +109,7 @@ function animate() {
     [myCube.position.x, myCube.position.y, myCube.position.z]; // the camera is inside the cube
   [camera.rotation.x, camera.rotation.y, camera.rotation.z] =
     [myCube.rotation.x, myCube.rotation.y, myCube.rotation.z]; // the camera looks in the same direction
+  
 
   frameCount += 1;
   renderer.render(scene, camera); // update the scene

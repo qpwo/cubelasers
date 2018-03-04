@@ -19,7 +19,7 @@
 <script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
 
 <script>
-var faces = [{points:{0:{x:0,y:0},14:{x:100,y:100},62:{x:0,y:0}}}]; // default temporary value
+var faces = [{points:(Array(100).fill().map(function(){return {x:Math.random()*100,y:Math.random()*100};}))}]//{x:Math.random()*100,y:Math.random()*100}))}]; // default temporary value
 var x0 = 0, y0 = 0; // the '0-point' for the webcam feed nose tip
 var xsign=1, ysign=1; // for mirroring direction of rotation
 
