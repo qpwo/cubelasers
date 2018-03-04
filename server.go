@@ -42,6 +42,7 @@ func processUserData(userJSON string) { // the data recieved from server
 // load users and usernames from "users.json"
 func loadUsers() {
 	jsonString, _ := ioutil.ReadFile("users.json");
+	log.Println(jsonString)
 	processUserData(string(jsonString))
 }
 
@@ -70,6 +71,7 @@ func OutgoingHandler(w http.ResponseWriter, r *http.Request) {
 func main() {
 	// load users from file
 	loadUsers()
+	log.Println("users: ", users)
 
 	// allow multiple handlers
 	mux := http.NewServeMux()
