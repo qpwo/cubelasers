@@ -51,23 +51,25 @@ function init() {
 }
 
 function animate() {
-  if (frameCount % 10 == 0) {
+  if (frameCount % 50 == 0) {
     getAllUsers()
     for (let name in allUsers) {
       if (allUsers.hasOwnProperty(name)) {
-        if (!cubes.hasOwnProperty(name)) {
+        if (!allCubes.hasOwnProperty(name)) {
           let cube = freshCube();
           console.log("Adding cube for user " + name);
-          cubes[name] = cube;
+          allCubes[name] = cube;
           scene.add(cube);
         }
-        let cube = cubes[name]; // maybe todo: check existence guaranteed?
+        let cube = allCubes[name]; // maybe todo: check existence guaranteed?
         let d = allUsers[name];
         [cube.position.x, cube.position.y, cube.position.z] = [d.x, d.y, d.z];
         [cube.rotation.x, cube.rotation.y, cube.rotation.z] = [d.rx, d.ry, d.rz];
       }
     }
-    sendMyData()
+  myData = {x: myCube.position.x, y: myCube.position.y, z: myCube.position.z,
+            rx: myCube.rotation.x, ry: myCube.rotation.y, rz: myCube.rotation.z};
+  sendMyData()
   }
 
   let leftTemple  = faces[0].points[0];
@@ -81,7 +83,7 @@ function animate() {
 
   let rotationSpeed = .001;
   let nose = faces[0].points[62]; // tip of the nose
-  let [xdiff, ydiff] = [nose.x-x0, nose.y-y0]; // distance between current coords and initial coords
+  var [xdiff, ydiff] = [nose.x-x0, nose.y-y0]; // distance between current coords and initial coords
 
   if (Math.abs(ydiff) > 20)
     myCube.rotation.x += ysign * Math.sign(ydiff)*(Math.abs(ydiff)-20) * rotationSpeed; // cube turns with face
@@ -102,11 +104,12 @@ function defaultData() {
 }
 // function to send my stuff to the server
 function sendMyData() {
+  console.log("POSTING:  " + JSON.stringify(myData));
   $.ajax({
     type:"POST",
     url:"/datasend",
-    data: {myName: myData}
-  })
+    data: JSON.stringify({myName: myData})
+  });
 }
 
 // function to get everyone else's data

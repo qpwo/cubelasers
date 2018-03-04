@@ -55,6 +55,7 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 				http.StatusInternalServerError)
 		}
 
+                log.Println("POST body: ", string(body))
 		processUserData(string(body))
 		fmt.Fprint(w, "POST done")
 	} else {
