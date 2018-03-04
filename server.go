@@ -8,42 +8,51 @@ import (
 	"encoding/json"
 
 	"io/ioutil"
+	"os"
 )
-var results []string
-var names []string
-var userSet = make(map[string]bool)
+
+// type for one user's data
 type UserData struct {
 	x, y, z, rx, ry, rz float64
-	
+	mouthOpen bool
 }
-var users = make(map[string]UserData[])
 
-func addUser(userName string){
-	_, exists := userSet[userName]
+// has an entry for each user
+var users = make(map[string]UserData)
+
+// adds user to "users" and their name if it isn't in "usernames"
+// called by processUserData
+func addUser(userName string, userData UserData){
+	_, exists := users[userName]
 	if !exists {
-		names = append(names, userName)
-		userSet[userName] = true
-		f, _ := json.Marshal(names)
-		ioutil.WriteFile("names.json", f, 0x644);
+		users[userName] = userData
+		f, _ := json.Marshal(users)
+		ioutil.WriteFile("users.json", f, 0x644);
 	}
-	log.Println(names)
+	log.Println(users)
 }
+
 
 //process user data
 func processUserData(userJSON string) { // the data recieved from server
-	// get that data out of those JSON
-	var userData interface{}
-	err := json.Unmarshal([]byte(userJSON), &userData)
+	// new users if a username -> UserData map, 
+	// but usually only has one key
+	newUsers := make(map[string]UserData)
+	err := json.Unmarshal([]byte(userJSON), &newUsers)
 	if err != nil {
-		fmt.Println("error:", err)
+		fmt.Println("json unmarshal err:", err)
+	} else {
+		// if unmarshalling went fine, update their data
+		for k, v := range newUsers {
+			addUser(k, v)
+		}
 	}
-	//try to assert the interface into a map
-	userMap, ok := userData.(map[string]interface{})
-	// conditionally add to set-like array of usernames
-	if ok {
-		addUser(userMap["name"].(string))
-		users[userMap["name"]] = userMap["coords"].(UserData)
-	}
+}
+
+// load users and usernames from "users.json"
+func loadUsers() {
+	jsonString, _ := ioutil.ReadFile("users.json");
+	processUserData(string(jsonString))
 }
 
 // PostHandler converts post request body to string
@@ -54,7 +63,6 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 			http.Error(w, "Error reading request body",
 				http.StatusInternalServerError)
 		}
-		results = append(results, string(body))
 
 		processUserData(string(body))
 		fmt.Fprint(w, "POST done")
@@ -64,26 +72,34 @@ func PostHandler(w http.ResponseWriter, r *http.Request) {
 }
 
 func main() {
-	f, _ := ioutil.ReadFile("names.json");
-	err := json.Unmarshal(f, &names)
+	// load users from file
+	loadUsers()
 
-	for _, name := range names{
-		userSet[name] = true
-	}
-
-	if err != nil{
-		log.Println(f)
-	}
-
+	// allow multiple handlers
 	mux := http.NewServeMux()
 
+	// take posts on /datasend
     mux.HandleFunc("/datasend", PostHandler)
 
     fs := http.FileServer(http.Dir("./"))
     mux.Handle("/", http.StripPrefix("/", fs))
 
-	err = http.ListenAndServeTLS(":443", "dummycert.pem", "dummykey.pem", mux)
+	// check is server cert is found, otherwise 
+	// use local dummy certs
+	serverCertfile := "/etc/letsencrypt/keys/0000_key-certbot.pem"
+	var certfile, keyfile string
+	if _, err := os.Stat(serverCertfile); os.IsNotExist(err) {
+		keyfile = "dummykey.pem"
+		certfile = "dummycert.pem"
+	} else {
+		keyfile = "/etc/letsencrypt/live/cubelasers.com/fullchain.pem"
+		certfile = serverCertfile
+	}
+
+	// s-s-s-serve it up
+	err := http.ListenAndServeTLS(":443", certfile, keyfile, mux)
 	log.Println("serving")
+
     if err != nil {
         log.Fatal("ListenAndServe: ", err)
     }
