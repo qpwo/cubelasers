@@ -21,26 +21,28 @@
 var faces = [{points:{62:{x:0,y:0}}}]; // default temporary value
 var x0 = 0, y0 = 0; // the '0-point' for the webcam feed nose tip
 var xsign=1, ysign=1; // for mirroring direction of rotation
-{
-  let button = document.createElement("button");
-  button.innerText = "Set 0 point for nose";
-  button.onclick = function () {
-    let point = faces[0].points[62];
+
+(function() {
+  var c = document.getElementById("webcam-container");
+
+  var set0 = document.createElement("button");
+  set0.innerText = "Set 0 point for nose";
+  set0.onclick = function () {
+    var point = faces[0].points[62];
     [x0, y0] = [point.x, point.y];
   };
+  c.appendChild(set0);
 
-  let mirrorx = document.createElement("button");
-  let mirrory = document.createElement("button");
+  var mirrorx = document.createElement("button");
   mirrorx.innerText = "Mirror left/right";
-  mirrory.innerText = "Mirror up/down";
   mirrorx.onclick = function() { xsign *= -1; };
-  mirrory.onclick = function() { ysign *= -1; };
-
-  let c = document.getElementById("webcam-container");
-  c.appendChild(button);
   c.appendChild(mirrorx);
+
+  var mirrory = document.createElement("button");
+  mirrory.innerText = "Mirror up/down";
+  mirrory.onclick = function() { ysign *= -1; };
   c.appendChild(mirrory);
-}
+})();
 </script>
 
 <script src="three.min.js"></script> <!-- WebGL wrapper -->

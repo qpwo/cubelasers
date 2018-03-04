@@ -1,8 +1,9 @@
 // March 2018
 // Adapted from Rainer Lienhart's `brfv4_javascript_examples` https://github.com/Tastenkunst/brfv4_javascript_examples
 // Displays facial map overlayed with webcam stream in browser window
+
+(function () {
 var brfv4BaseURL = "js/libs/brf_asmjs/";
-var faces;
 
 function initExample() {
   var webcam = document.getElementById("_webcam");    // our webcam video
@@ -100,5 +101,5 @@ function initExample() {
   }
 }
 
-  window.onload = initExample;
-
+window.onload = initExample;
+})();
