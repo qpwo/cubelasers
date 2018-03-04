@@ -10,10 +10,10 @@
   </style>
 </head>
 <body>
-<video  id="_webcam" style="display: none;" playsinline></video> <!-- Holds webcam input -->
-<div style="position:relative" id="webgl-container">
-  <div style="position:absolute;outline: 1px solid green; width:200px; top:0px; right:0px;" id="webcam-container">
-    <canvas id="_imageData" style="width:200px; height:200px;"></canvas> <!-- Display webcam facial map -->
+<video  id="_webcam" style="display: none;" playsinline></video> <!-- Invisibly holds webcam input -->
+<div style="position:relative" id="webgl-container"> <!-- Holds webgl rendering of cube universe -->
+  <div style="position:absolute;outline: 2px solid green; width:200px; top:0px; right:0px;" id="webcam-container">
+    <canvas id="_imageData" style="width:200px; height:200px;"></canvas> <!-- Holds webcam + facial map overlay -->
   </div>
 </div>
 

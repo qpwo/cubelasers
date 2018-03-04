@@ -4,7 +4,7 @@
 var camera, scene, renderer;
 var cube, sphere, light, texture, speed=-.1;
 
-var [xrotconst, yrotconst] = [.001, .001]; // Rate of rotation when user turns head
+var rotationSpeed = 0.001; // speed of rotation
 init();
 animate();
 
@@ -13,18 +13,12 @@ function init() {
 
   renderer = new THREE.WebGLRenderer();
   renderer.setSize(window.innerWidth, window.innerHeight);
-  renderer.setClearColor( 0xdddddd, 1); // Grey background
+  renderer.setClearColor(0xdddddd, 1); // Grey background
   renderer.shadowMap.enabled = true; // Allow shadows
   document.getElementById("webgl-container").appendChild(renderer.domElement);
 
   scene = new THREE.Scene();
-
-  camera = new THREE.PerspectiveCamera(
-    35,        // Field of view
-    1,    // Aspect ratio
-    0.1,      // Near plane
-    10000      // Far plane
-  );
+  camera = new THREE.PerspectiveCamera(35, 1, 0.1, 10000);
 
   cube = new THREE.Mesh(
     new THREE.BoxGeometry(5,5,5),
@@ -51,10 +45,16 @@ function animate() {
   var [xdiff, ydiff] = [point.x-x0, point.y-y0]; // distance between current coords and initial coords
   requestAnimationFrame(animate); // rerun on next frame
   cube.translateZ(speed); // cube goes forward in direction facing
-  cube.rotation.x += ydiff * yrotconst; // cube turns with face
-  cube.rotation.y += xdiff * yrotconst; // cube turns with face
+  if (cube.position.length() > 100) // cube is outside sphere
+    cube.position.setLength(95); // bring it back in
+  if (Math.abs(ydiff) > 20)
+    cube.rotation.x += Math.sign(ydiff)*(Math.abs(ydiff)-20) * rotationSpeed; // cube turns with face
+  if (Math.abs(xdiff) > 20)
+    cube.rotation.y += Math.sign(xdiff)*(Math.abs(xdiff)-20) * rotationSpeed; // cube turns with face
   [camera.position.x, camera.position.y, camera.position.z] =
-    [cube.position.x, cube.position.y+5, cube.position.z+20]; // the camera follows behind
-  camera.lookAt(cube.position);
+    [cube.position.x, cube.position.y, cube.position.z]; // the camera follows behind
+  [camera.rotation.x, camera.rotation.y, camera.rotation.z] =
+    [cube.rotation.x, cube.rotation.y, cube.rotation.z]; // the camera looks in the same direction
+  //camera.lookAt(cube.position);
   renderer.render(scene, camera); // update the scene
 }
