@@ -81,7 +81,7 @@ function animate() {
   if (myCube.position.length() > 100) // cube is outside sphere
     myCube.position.setLength(95); // bring it back in
 
-  let rotationSpeed = .001;
+  let rotationSpeed = .0003;
   let nose = faces[0].points[62]; // tip of the nose
   var [xdiff, ydiff] = [nose.x-x0, nose.y-y0]; // distance between current coords and initial coords
 
