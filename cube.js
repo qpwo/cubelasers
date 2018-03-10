@@ -2,6 +2,7 @@
 // Uses three.js to render a simple cube + sphere scene
 // Authors: Robert Max Williams and Luke Harold Miles. Public Domain Dedication.
 
+let socket;
 let frameCount = 0;
 let camera, scene, renderer; // primary objects
 let sphere, light, texture; // secondary objects
@@ -21,6 +22,18 @@ function freshCube() {
 }
 
 function init() {
+
+
+
+  var socket = io.connect('https://localhost', {secure: true});
+  var socket = io.connect('https://localhost', {secure: true});
+  var socket = io.connect('https://localhost', {secure: true});
+
+  var someData = "bar"
+  socket.emit('some:event', JSON.stringify(someData), function(data){
+       console.log('ACK from server wtih data: ', data)
+  });
+
   texture = new THREE.TextureLoader().load('texture.png'); // inner surface of sphere
 
   renderer = new THREE.WebGLRenderer();

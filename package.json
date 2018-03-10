@@ -1,0 +1,30 @@
+{
+  "name": "cubelasers",
+  "description": "Minimal router and client",
+  "version": "0.0.1",
+  "devDependencies": {
+    "mocha": "*"
+  },
+  "dependencies": {
+    "socket.io-client": "0.9.17"
+  },
+  "main": "cubes.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1",
+	"build": "browserify cube_pre.js > cube.js"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/qpwo/3d.git"
+  },
+  "keywords": [
+    "lasers",
+    "cubes"
+  ],
+  "author": "luke and max",
+  "license": "UNLICENCED",
+  "bugs": {
+    "url": "https://github.com/qpwo/3d/issues"
+  },
+  "homepage": "https://github.com/qpwo/3d#readme"
+}

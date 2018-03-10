@@ -2,6 +2,14 @@
 // Uses three.js to render a simple cube + sphere scene
 // Authors: Robert Max Williams and Luke Harold Miles. Public Domain Dedication.
 
+const socket = io('https://localhost', {secure: true});
+
+//var socket = io('http://localhost');
+var someData = "bar"
+socket.emit('some:event', JSON.stringify(someData), function(data){
+     console.log('ACK from server wtih data: ', data)
+});
+
 let frameCount = 0;
 let camera, scene, renderer; // primary objects
 let sphere, light, texture; // secondary objects

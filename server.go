@@ -9,6 +9,7 @@ import (
 
 	"io/ioutil"
 	"os"
+	"github.com/googollee/go-socket.io"
 )
 
 // has an entry for each user
@@ -46,30 +47,8 @@ func loadUsers() {
 	processUserData(string(jsonString))
 }
 
-// PostHandler converts post request body to string
-func PostHandler(w http.ResponseWriter, r *http.Request) {
-	if r.Method == "POST" {
-		body, err := ioutil.ReadAll(r.Body)
-		if err != nil {
-			http.Error(w, "Error reading request body",
-				http.StatusInternalServerError)
-		}
-
-                log.Println("POST body: ", string(body))
-		processUserData(string(body))
-		fmt.Fprint(w, "POST done")
-	} else {
-		http.Error(w, "Invalid request method", http.StatusMethodNotAllowed)
-	}
-}
-
-// send "users" to user
-func OutgoingHandler(w http.ResponseWriter, r *http.Request) {
-	dataString, _ := json.Marshal(users)
-	w.Write(dataString)
-}
-
 func main() {
+
 	// load users from file
 	loadUsers()
 	log.Println("users: ", users)
@@ -77,11 +56,41 @@ func main() {
 	// allow multiple handlers
 	mux := http.NewServeMux()
 
-	// take posts on /datasend
-    mux.HandleFunc("/datasend", PostHandler)
+	server, err := socketio.NewServer(nil)
+	if err != nil {
+		log.Fatal(err)
+	}
 
-	// take posts on /datasend
-    mux.HandleFunc("/datareceive", OutgoingHandler)
+	server.On("some:event", func(msg string) string {
+		log.Println("got an event!!")
+		return "yesss"//Sending ack with data in msg back to client, using "return statement"
+	})
+/*
+	server.On("connection", func(so socketio.Socket) {
+		log.Println("on connection")
+		so.Join("game")
+		so.On("game message", func(msg string) {
+			log.Println("emit:", so.Emit("game message", msg))
+			so.BroadcastTo("game", "game message", msg)
+		})
+		so.On("disconnection", func() {
+			log.Println("on disconnect")
+		})
+	})
+*/
+	server.On("error", func(so socketio.Socket, err error) {
+		log.Println("error:", err)
+	})
+
+	server.BroadcastTo("game", "message", "you good the bar", func (so socketio.Socket, data string) {
+		log.Println("Client ACK with data: ", data)
+	})
+
+
+
+
+
+	mux.Handle("/socket.io/", server)
 
     fs := http.FileServer(http.Dir("./"))
     mux.Handle("/", http.StripPrefix("/", fs))
@@ -94,15 +103,15 @@ func main() {
 		keyfile = "dummykey.pem"
 		certfile = "dummycert.pem"
 	} else {
-		keyfile = serverKeyfile 
+		keyfile = serverKeyfile
 		certfile = "/etc/letsencrypt/live/cubelasers.com/fullchain.pem"
 	}
 
 	// s-s-s-serve it up
-	err := http.ListenAndServeTLS(":443", certfile, keyfile, mux)
+	serverr := http.ListenAndServeTLS(":443", certfile, keyfile, mux)
 	log.Println("serving")
 
-    if err != nil {
-        log.Fatal("ListenAndServe: ", err)
+    if serverr != nil {
+        log.Fatal("ListenAndServe: ", serverr)
     }
 }
